@@ -13,7 +13,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -36,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.artspaceapp.ui.theme.ArtSpaceAppTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.layout.ContentScale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,12 +86,24 @@ fun ArtApp(){
         }
     }
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .statusBarsPadding()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        ArtworkWall(artworkResId = imageRes)
-        ArtworkTitle(title = title, artist = artist, year = year)
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            ArtworkWall(artworkResId = imageRes)
+            Spacer(modifier = Modifier.height(24.dp))
+            ArtworkTitle(title = title, artist = artist, year = year)
+        }
         DisplayController(
             onPrevious = {
                 currentArtwork = if (currentArtwork == 1) 3 else currentArtwork - 1
@@ -114,7 +131,10 @@ fun ArtworkWall(
         Image(
             painter = painterResource(id = artworkResId),
             contentDescription = null,
-            modifier = Modifier.padding(20.dp)
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .heightIn(max = 400.dp)
+                .padding(32.dp)
         )
     }
 }
